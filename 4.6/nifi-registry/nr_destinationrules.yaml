@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: dr-nifi-registry
+  namespace: alpha-httpbin
+spec:
+  host: nifi-registry
+  trafficPolicy:
+    connectionPool:
+      http:
+        h2UpgradePolicy: DO_NOT_UPGRADE
+    tls:
+      mode: ISTIO_MUTUAL
