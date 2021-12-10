@@ -1,9 +1,31 @@
-apiVersion: maistra.io/v2
-kind: ServiceMeshControlPlane
-metadata:
-  name: basic
-  namespace: alpha-smcp
 spec:
+  security:
+    controlPlane:
+      mtls: true
+    dataPlane:
+      automtls: true
+      mtls: true
+  tracing:
+    sampling: 10000
+    type: Jaeger
+  profiles:
+    - default
+  proxy:
+    accessLogging:
+      file:
+        name: /dev/stdout
+    injection:
+      autoInject: false
+  gateways:
+    egress:
+      enabled: true
+    enabled: true
+    ingress:
+      enabled: true
+    openshiftRoute:
+      enabled: true
+  policy:
+    type: Istiod
   addons:
     grafana:
       enabled: true
@@ -15,40 +37,6 @@ spec:
       enabled: true
     prometheus:
       enabled: true
-  gateways:
-    egress:
-      enabled: true
-    enabled: true
-    ingress:
-      enabled: true
-      ingress: true
-    openshiftRoute:
-      enabled: true
-  policy:
-    type: Istiod
-  profiles:
-  - default
-  proxy:
-    accessLogging:
-      file:
-        name: /dev/stdout
-    injection:
-      autoInject: false
-      neverInjectSelector:
-      - matchExpressions:
-        - key: sidecar.istio.io/dni
-          operator: =
-          values:
-          - "true"
-  security:
-    controlPlane:
-      mtls: true
-    dataPlane:
-      automtls: true
-      mtls: true
+  version: v2.1
   telemetry:
     type: Istiod
-  tracing:
-    sampling: 10000
-    type: Jaeger
-  version: v2.0
